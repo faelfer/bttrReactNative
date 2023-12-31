@@ -1,118 +1,64 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+ 
+import React, {useEffect} from 'react';
+import {SafeAreaView, StatusBar} from 'react-native';
+// Import * as Sentry from '@sentry/react-native';
+// import OneSignal from 'react-native-onesignal';
+// import {useNetInfo} from '@react-native-community/netinfo';
+// import Snackbar from 'react-native-snackbar';
+import {PersistGate} from 'redux-persist/integration/react';
+import {Provider} from 'react-redux';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {store, persistor} from './src/services/createStore';
+import Routes from './src/routes';
+// Import environment from './src/utils/environment';
+// import {version} from './package.json';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {PRIMARY_COLOR} from './src/styles/colors';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// Sentry.init({
+// 	dsn: environment.SENTRY_DSN,
+// 	release: `usibras-react-native@${version}`,
+// 	environment: environment.NAME_ENV,
+// 	debug: true,
+// });
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+// OneSignal Init Code
+// OneSignal.setLogLevel(6, 0);
+// OneSignal.setAppId(environment.ONESIGNAL_APP_ID);
+// END OneSignal Init Code
+
+function ReduxProvider() {
+	return (
+		<Provider store={store}>
+			<PersistGate persistor={persistor}>
+				<Routes />
+			</PersistGate>
+		</Provider>
+	);
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+export default function App() {
+	// Const netInfo = useNetInfo();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+	// useEffect(() => {
+	// 	console.log('useEffect | netInfo: ', netInfo);
+	// 	console.log('useEffect | netInfo.isConnected: ', netInfo.isConnected);
+	// 	if (netInfo.isConnected === false) {
+	// 		console.log('useEffect | netInfo.isConnected === false: ', netInfo.isConnected === false);
+	// 		Snackbar.show({
+	// 			text: 'Sem conexão com a internet, tente novamente mais tarde.',
+	// 			duration: Snackbar.LENGTH_LONG,
+	// 		});
+	// 	}
+	// }, [netInfo]);
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+	return (
+		<SafeAreaView style={{flex: 1, backgroundColor: PRIMARY_COLOR}}>
+			<StatusBar
+				backgroundColor={PRIMARY_COLOR}
+				barStyle="light-content"
+			/>
+			<ReduxProvider />
+		</SafeAreaView>
+	);
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
